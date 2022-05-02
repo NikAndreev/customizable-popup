@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function(){
 		#closeClasses
 
 		constructor(config) {
-			this.#content = config.content
+			this.#content = config.content || ''
 			this.#popupClasses = config.popupClasses || []
 			this.#bodyClasses = config.bodyClasses || []
 			this.#contentClasses = config.contentClasses || []
@@ -18,6 +18,10 @@ document.addEventListener('DOMContentLoaded', function(){
 			this.#create()
 			this.#setHandlers()
 			this.#render()
+
+			if (config.callback && typeof config.callback === 'function') {
+				config.callback()
+			}
 		}
 
 		show() {
@@ -57,7 +61,9 @@ document.addEventListener('DOMContentLoaded', function(){
 		}
 
 		#setCloseBtnClickHandler() {
-			this.#popupEl.querySelector('[data-popup-close]').addEventListener('click', ()=> this.remove())
+			this.#popupEl.querySelectorAll('[data-popup-close]').forEach( btn => {
+				btn.addEventListener('click', ()=> this.remove())
+			})  
 		}
 
 		#setDocumentClickHandler() {
@@ -83,7 +89,7 @@ document.addEventListener('DOMContentLoaded', function(){
 								<div class="popup__body ${this.#bodyClasses.join(' ')}">
 									<div class="popup__content ${this.#contentClasses.join(' ')}" data-popup-content>
 										${this.#content}
-										<span class="popup__close ${this.#closeClasses.join(' ')}" data-popup-close></span>
+										<button class="popup__close ${this.#closeClasses.join(' ')}" data-popup-close></button>
 									</div>
 								</div>
 							</div>`
@@ -95,7 +101,8 @@ document.addEventListener('DOMContentLoaded', function(){
 			content: `<div class="popup__title">Hi!</div>
 								<div class="popup__text">
 									Lorem ipsum dolor sit amet consectetur adipisicing elit. Modi, aspernatur deleniti. Soluta nostrum id libero nobis possimus eveniet magni neque incidunt sunt pariatur, quisquam iste aliquid repudiandae sapiente delectus amet omnis, accusamus exercitationem. Illum voluptatem magni excepturi mollitia incidunt, enim doloremque accusamus voluptatibus distinctio facere quas corporis dolorum ipsam quae, minus tempore voluptas saepe reiciendis. Autem at voluptatem esse. Iusto deserunt rerum deleniti, quisquam dignissimos officiis debitis obcaecati repellendus quae, sit cum laboriosam maxime atque delectus saepe eveniet, a itaque eligendi quos. Asperiores, dolorem inventore doloremque maiores soluta optio iusto esse perspiciatis, provident numquam mollitia quae ratione maxime dolore quos.
-								</div>`
+								</div>
+								<button data-popup-close>Close</button>`			
 		}).show()
 	})
 	
