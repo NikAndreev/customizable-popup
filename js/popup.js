@@ -17,24 +17,40 @@ document.addEventListener('DOMContentLoaded', function(){
 			this._setHandlers()
 			this._render()
 
-			if (config.callback && typeof config.callback === 'function') {
-				config.callback()
+			if (typeof config.on === 'object') {
+				this._setCallbacks(config.on)
+			}
+
+			if (this._onInit) {
+				this._onInit()
 			}
 		}
 
 		show() {
 			this._popupEl.classList.add('active')
 			document.body.classList.add('lock')
+
+			if (this._onShow) {
+				this._onShow()
+			}
 		}
 
 		hide() {
 			this._popupEl.classList.remove('active')
 			document.body.classList.remove('lock')
+
+			if (this._onHide) {
+				this._onHide()
+			}
 		}
 
 		remove() {
 			this.hide()
 			this.destroy()
+
+			if (this._onRemove) {
+				this._onRemove()
+			}
 		}
 
 		destroy() {
@@ -49,6 +65,32 @@ document.addEventListener('DOMContentLoaded', function(){
 			this._closeClasses = null
 
 			document.removeEventListener('keydown', this._escKeyDownHandler)
+
+			if (this._onDestroy) {
+				this._onDestroy()
+			}
+		}
+
+		_setCallbacks(config) {
+			if (typeof config.init === 'function') {
+				this._onInit = config.init
+			}
+
+			if (typeof config.show === 'function') {
+				this._onShow = config.show
+			}
+
+			if (typeof config.hide === 'function') {
+				this._onHide = config.hide
+			}
+
+			if (typeof config.remove === 'function') {
+				this._onRemove = config.remove
+			}
+
+			if (typeof config.destroy === 'function') {
+				this._onDestroy = config.destroy
+			}
 		}
 
 		_create() {
@@ -109,7 +151,30 @@ document.addEventListener('DOMContentLoaded', function(){
 								<div class="popup__text">
 									Lorem ipsum dolor sit amet consectetur adipisicing elit. Modi, aspernatur deleniti. Soluta nostrum id libero nobis possimus eveniet magni neque incidunt sunt pariatur, quisquam iste aliquid repudiandae sapiente delectus amet omnis, accusamus exercitationem. Illum voluptatem magni excepturi mollitia incidunt, enim doloremque accusamus voluptatibus distinctio facere quas corporis dolorum ipsam quae, minus tempore voluptas saepe reiciendis. Autem at voluptatem esse. Iusto deserunt rerum deleniti, quisquam dignissimos officiis debitis obcaecati repellendus quae, sit cum laboriosam maxime atque delectus saepe eveniet, a itaque eligendi quos. Asperiores, dolorem inventore doloremque maiores soluta optio iusto esse perspiciatis, provident numquam mollitia quae ratione maxime dolore quos.
 								</div>
-								<button data-popup-close>Close</button>`
+								<button data-popup-close>Close</button>`,
+			id: 'test',
+			popupClasses: ['popup--test'],
+			bodyClasses: ['popup__body--test'],
+			contentClasses: ['popup__content--test'],
+			closeClasses: ['popup__close--test'],
+			on: {
+				init: function () {
+					console.log('Popup initialized');
+				},
+				show: function () {
+					console.log('Popup shown');
+				},
+				hide: function () {
+					console.log('Popup is hidden');
+				},
+				remove: function () {
+					console.log('Popup removed');
+				},
+				destroy: function () {
+					console.log('Popup destroyed');
+				},
+			},
+							
 		}).show()
 	})
 	
